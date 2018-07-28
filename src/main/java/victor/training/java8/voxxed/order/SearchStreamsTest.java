@@ -32,12 +32,15 @@ public class SearchStreamsTest {
 		Order order2 = new Order(Status.ACTIVE);
 		Order order3 = new Order(Status.DRAFT);
 		Customer customer = new Customer(order1, order2, order3);
+		
+		System.out.println("p1_getActiveOrders="+service.p1_getActiveOrders(customer));
 		assertEquals(Arrays.asList(order1, order2), service.p1_getActiveOrders(customer));
 	}
 
 	@Test
 	public void p2_getOrderById() {
 		List<Order> orders = Arrays.asList(new Order(1L), new Order(2L), new Order(3L));
+		System.out.println("p2_getOrderById="+(long) service.p2_getOrderById(orders, 1L).getId());
 		assertEquals(1L, (long) service.p2_getOrderById(orders, 1L).getId());
 	}
 	
@@ -51,6 +54,7 @@ public class SearchStreamsTest {
 	@Test
 	public void p3_hasActiveOrders_true() {
 		Customer customer = new Customer(new Order(Status.INACTIVE), new Order(Status.ACTIVE));
+		System.out.println("p3_hasActiveOrders="+service.p3_hasActiveOrders(customer));
 		assertTrue(service.p3_hasActiveOrders(customer));
 	}
 
@@ -61,7 +65,7 @@ public class SearchStreamsTest {
 	}
 	
 	@Test
-	public void p4_canBeReturned_frue() {
+	public void p4_canBeReturned_true() {
 		Order order = new Order(new OrderLine());
 		assertTrue(service.p4_canBeReturned(order));
 	}
@@ -78,14 +82,14 @@ public class SearchStreamsTest {
 		LocalDate yesterday = now().minusDays(1);
 		Order order1 = new Order().setTotalPrice(BigDecimal.ONE).setCreationDate(now());
 		Order order2 = new Order().setTotalPrice(BigDecimal.TEN).setCreationDate(yesterday);
-		assertEquals(order2, service.p5_getMaxPriceOrder(new Customer(order1, order2)));
-		// assertEquals(yesterday, service.p5_getMaxPriceOrder(new Customer(order1, order2)).get());
+		//assertEquals(order2, service.p5_getMaxPriceOrder(new Customer(order1, order2)));
+		 assertEquals(yesterday, service.p5_getMaxPriceOrder(new Customer(order1, order2)).get());
 	}
 	
 	@Test
 	public void p5_getMaxPriceOrder_whenNoOrders_returnsNothing() {
-		assertNull(service.p5_getMaxPriceOrder(new Customer()));
-		// assertFalse(service.p5_getMaxPriceOrder(new Customer()).isPresent());
+		//assertNull(service.p5_getMaxPriceOrder(new Customer()));
+		 assertFalse(service.p5_getMaxPriceOrder(new Customer()).isPresent());
 	}
 	
 	@Test
@@ -96,6 +100,7 @@ public class SearchStreamsTest {
 		Order order4 = new Order().setCreationDate(LocalDate.parse("2016-01-04"));
 		
 		Customer customer = new Customer(order1, order2, order3, order4);
+		System.out.println("getLast3Orders="+service.p6_getLast3Orders(customer));
 		assertEquals(Arrays.asList(order4,order3,order2), service.p6_getLast3Orders(customer));
 	}
 	
