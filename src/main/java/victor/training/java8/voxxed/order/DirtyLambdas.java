@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import victor.training.java8.voxxed.order.dto.AuditDto;
 import victor.training.java8.voxxed.order.entity.Audit;
@@ -27,13 +28,46 @@ public class DirtyLambdas {
 	private OrderLineRepository repo;
 
 	public Set<Customer> getCustomersToNotifyOfOverdueOrders(List<Order> orders, LocalDate warningDate) {
-		return orders.stream()
+		
+		// to write good pridicates for avoiding && operation.
+		
+		/*return orders.stream()
 			.filter(order -> order.getDeliveryDueDate().isBefore(warningDate) && 
 							 order.getOrderLines().stream()
 							 	.anyMatch(line -> line.getStatus() != OrderLine.Status.IN_STOCK))
 			.map((Order o) -> {return o.getCustomer();})
-			.collect(toSet());
+			.collect(toSet());*/
+		
+		/*return orders.stream()
+				.filter(order -> order.getDeliveryDueDate().isBefore(warningDate))
+				.filter(isOrderLineNotInStack())
+				.map(Order::getCustomer)
+				.collect(toSet());*/
+		
+		return orders.stream()
+				.filter(hasDeliveryDueDate(warningDate)) // this method I can reuse it and make it in util class
+				//.filter(order -> hasLineNotInStock(order)) // hate of -> expression
+				.filter(this::hasLineNotInStock)
+				.map(Order::getCustomer)
+				.collect(toSet());
+		
+		
 	}
+
+	private Predicate<? super Order> hasDeliveryDueDate(LocalDate warningDate) {
+		return order -> order.getDeliveryDueDate().isBefore(warningDate);
+	}
+
+	private boolean hasLineNotInStock(Order order) {
+		return order.getOrderLines().stream()
+			 	.anyMatch(OrderLine::isNotInStock);
+	}
+
+	// Stream of stream is very bad smell so we extracted to new method
+	/*private Predicate<? super Order> isOrderLineNotInStack() {
+		return order -> order.getOrderLines().stream()
+						 	.anyMatch(OrderLine::isNotInStock);
+	}*/
 	
 	/**
 	 * No duplicate DTOs should be returned (cf sorting comparator).

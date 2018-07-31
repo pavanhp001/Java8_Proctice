@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import victor.training.java8.voxxed.order.TransformStreams;
+import victor.training.java8.voxxed.order.dto.OrderDto;
+
 
 public class Order {
 

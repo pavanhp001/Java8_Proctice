@@ -18,6 +18,10 @@ public class OrderLine {
 	public OrderLine() {
 	}
 	
+	public boolean isNotInStock(){
+		return status != OrderLine.Status.IN_STOCK;
+	}
+	
 	public OrderLine(Status status) {
 		this.status = status;
 	}

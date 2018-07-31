@@ -121,6 +121,9 @@ public class TransformStreamsTest {
 				new OrderLine(chair, 1));
 		
 		List<Product> actual = service.p07_getAllOrderedProducts(new Customer(order1, order2));
+		
+		System.out.println("p07_getAllOrderedProducts actual="+actual);
+		System.out.println("p07_getAllOrderedProducts = "+Arrays.asList(chair, table));
 		assertEquals(Arrays.asList(chair, table), actual);
 	}
 	
